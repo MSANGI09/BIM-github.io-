@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f5f5f5;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #333;
+            margin: 10px 0;
+        }
+        p {
+            color: #555;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .input-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #28a745;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        img{
+            width: 100px;
+            height: 100px;
+            align-items: center;
+            border-radius: 50%;
+
+        }
+        input::placeholder{
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="intro-page">
+            <h1>Welcome to the BMI Calculator</h1>
+            <img src="ko.jpg" alt="Msangi JR" class="icon">
+            <p>This program will help you calculate your Body Mass Index (BMI) based on your weight and height. It will provide you with advice depending on the BMI value obtained.</p>
+            <button onclick="showInputPage()">Continue</button>
+            <button onclick="showGiftPrompt()">Quit program</button>
+        </div>
+        <div id="input-page" style="display: none;">
+            <h2>BMI Calculator</h2>
+            <div class="input-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name">
+            </div>
+            <div class="input-group">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight">
+            </div>
+            <div class="input-group">
+                <label for="height">Height (cm):</label>
+                <input type="number" id="height">
+            </div>
+            <button onclick="calculateBMI()">Calculate</button>
+        </div>
+        <div id="loading-page" class="loading-container" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p class="loading-message">Please wait...</p>
+        </div>
+        <div id="result-page" class="result-container" style="display: none;">
+            <h2>Results</h2>
+            <p id="result-message"></p>
+            <button onclick="showGiftPrompt()">Quit program</button>
+        </div>
+        <div id="gift-prompt" style="display: none;">
+            <h2>Receive a Gift from Msangi JR</h2>
+            <img src="ko.jpg" alt="Msangi JR" class="icon">
+            <p>Please enter your mobile number to receive your gift:</p>
+           <input type="text" id="nameuser" placeholder="Enter your name"> <br><br>
+
+           <input type="text" id="mobileNumber" placeholder="Enter your mobile number">
+            
+            <button onclick="sendGift()">Receive Gift</button>
+            <button onclick="closeGiftPrompt()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        function showInputPage() {
+            document.getElementById('intro-page').style.display = 'none';
+            document.getElementById('input-page').style.display = 'block';
+        }
+
+        function showGiftPrompt() {
+            document.getElementById('intro-page').style.display = 'none';
+            document.getElementById('result-page').style.display = 'none';
+            document.getElementById('gift-prompt').style.display = 'block';
+        }
+
+        function closeGiftPrompt() {
+            document.getElementById('gift-prompt').style.display = 'none';
+            document.getElementById('intro-page').style.display = 'block';
+        }
+
+        function calculateBMI() {
+            const name = document.getElementById('name').value;
+            const weight = document.getElementById('weight').value;
+            const height = document.getElementById('height').value / 100;
+
+            const bmi = (weight / (height * height)).toFixed(2);
+            let message;
+
+            if (bmi < 18.5) {
+                message = `Dear ${name}, your BMI is ${bmi}.\n\n You are underweight.`;
+            } else if (bmi < 24.9) {
+                message = `Dear ${name}, your BMI is ${bmi}.\n\n You have a normal weight.`;
+            } else if (bmi < 29.9) {
+                message = `Dear ${name}, your BMI is ${bmi}.\n\n You are overweight.`;
+            } else {
+                message = `Dear ${name}, your BMI is ${bmi}. \n\n You are obese.`;
+            }
+
+            document.getElementById('result-message').innerText = message;
+            document.getElementById('input-page').style.display = 'none';
+            document.getElementById('loading-page').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('loading-page').style.display = 'none';
+                document.getElementById('result-page').style.display = 'block';
+            }, 2000);
+        }
+
+        function sendGift() {
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            const nameuser = document.getElementById('nameuser').value;
+
+            // Logic to send gift to the provided mobile number
+            alert(`Dear, ${nameuser} Gift sent to your mobile account ${mobileNumber} Thanks for use the program your are welecome.`);
+        }
+    </script>
+</body>
+</html>
